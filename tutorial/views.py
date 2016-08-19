@@ -20,4 +20,4 @@ class TutorialViews(object):
     def rate(self):
         one = int(self.request.params['user'])
         two = int(self.request.params['movie'])
-        return {'page_title': 'Edit View', 'new_name': one+two}
+        return {'page_title': 'Edit View', 'rating': one+two}

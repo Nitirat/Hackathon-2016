@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1>Hackathon 2016</h1>
-        <p>You submitted <code>${new_name}</code></p>
+        <p>Prediction rate <code>${rating}</code></p>
         <p>Go to the <a href="${request.route_url('hello')}">Back</a>.</p>
     </body>
 </html>
