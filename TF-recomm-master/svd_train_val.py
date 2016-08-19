@@ -41,7 +41,7 @@ def saveModel(init_op):
         # Do some work with the model.
         print(sess)
         # Save the variables to disk.
-        save_path = saver.save(sess, "/tmp/model.ckpt")
+        save_path = saver.save(sess, "/home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt")
         print("Model saved in file: %s" % save_path)
 
 

@@ -20,11 +20,10 @@ def restoreModel():
     # do some work with the model.
     with tf.Session() as sess:
         # Restore variables from disk.
-        saver.restore(sess, "/tmp/model.ckpt")
+        saver.restore(sess, "/home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt")
         print("Model restored.")
         # Do some work with the model
         print(sess)
-
 
 user_batch = tf.placeholder(tf.int32, shape=[None], name="id_user")
 item_batch = tf.placeholder(tf.int32, shape=[None], name="id_item")
