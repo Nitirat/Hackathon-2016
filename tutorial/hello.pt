@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Hackathon 2016</title>
+    </head>
+    <body>
+        <h1>Hackathon 2016</h1>
+        <form method="POST"
+              action="${request.current_route_url()}">
+            <input name="user"/>
+            <br />
+            <input name="movie"/>
+            <br />
+            <input type="submit" name="form.rate" value="Submit"/>
+        </form>
+    </body>
+</html>
