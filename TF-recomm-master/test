@@ -1,0 +1,22 @@
+Tensor("svd_inference:0", shape=(?,), dtype=float32, device=/device:CPU:0)
+
+
+
+
+
+
+
+
+def saveModel(init_op):
+    # Add ops to save and restore all the variables.
+    saver = tf.train.Saver()
+
+    # Later, launch the model, initialize the variables, do some work, save the
+    # variables to disk.
+    with tf.Session() as sess:
+        sess.run(init_op)
+        # Do some work with the model.
+        print(sess)
+        # Save the variables to disk.
+        save_path = saver.save(sess, "/tmp/model.ckpt")
+        print("Model saved in file: %s" % save_path)
