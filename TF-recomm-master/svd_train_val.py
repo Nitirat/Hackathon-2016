@@ -12,7 +12,7 @@ BATCH_SIZE = 1000
 USER_NUM = 6040
 ITEM_NUM = 3952
 DIM = 15
-EPOCH_MAX = 100
+EPOCH_MAX = 10
 DEVICE = "/cpu:0"
 
 
@@ -28,21 +28,6 @@ def get_data():
     df_train = df[0:split_index]
     df_test = df[split_index:].reset_index(drop=True)
     return df_train, df_test
-
-
-def saveModel(init_op):
-    # Add ops to save and restore all the variables.
-    saver = tf.train.Saver()
-
-    # Later, launch the model, initialize the variables, do some work, save the
-    # variables to disk.
-    with tf.Session() as sess:
-        sess.run(init_op)
-        # Do some work with the model.
-        print(sess)
-        # Save the variables to disk.
-        save_path = saver.save(sess, "/home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt")
-        print("Model saved in file: %s" % save_path)
 
 
 def svd(train, test):
@@ -67,6 +52,10 @@ def svd(train, test):
     _, train_op = ops.optimiaztion(infer, regularizer, rate_batch, learning_rate=0.15, reg=0.05, device=DEVICE)
 
     init_op = tf.initialize_all_variables()
+
+    # Add ops to save and restore all the variables.
+    saver = tf.train.Saver()
+
     with tf.Session() as sess:
         sess.run(init_op)
         print("{} {} {} {}".format("epoch", "train_error", "val_error", "elapsed_time"))
@@ -77,7 +66,6 @@ def svd(train, test):
             _, pred_batch = sess.run([train_op, infer], feed_dict={user_batch: users,
                                                                    item_batch: items,
                                                                    rate_batch: rates})
-
             pred_batch = clip(pred_batch)
             errors.append(np.power(pred_batch - rates, 2))
             if i % samples_per_batch == 0:
@@ -93,7 +81,9 @@ def svd(train, test):
                                                        end - start))
                 start = end
 
-        saveModel(init_op)
+        # Save the variables to disk.
+        save_path = saver.save(sess, "//home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt")
+        print("Model saved in file: %s" % save_path)
 
 
 if __name__ == '__main__':

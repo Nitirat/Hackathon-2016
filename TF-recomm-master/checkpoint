@@ -1,2 +1,2 @@
-model_checkpoint_path: "/home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt"
-all_model_checkpoint_paths: "/home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt"
+model_checkpoint_path: "//home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt"
+all_model_checkpoint_paths: "//home/test/PycharmProjects/Hackathon-2016/TF-recomm-master/model.ckpt"

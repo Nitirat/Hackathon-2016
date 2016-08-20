@@ -2,10 +2,130 @@
 <html lang="en">
     <head>
         <title>Hackathon 2016</title>
+        <style>
+            hidden {
+                display: none;
+            }
+
+            .movie-title{
+                font-weight: bold;
+                font-size: 2.5em;
+            }
+        </style>
+        <script src="${request.static_url('tutorial:static/JS/jquery-1.11.0.js') }"></script>
+        <script src="${request.static_url('tutorial:static/JS/rateYo/jquery.rateyo.js') }"></script>
+        <link rel="stylesheet" href="${request.static_url('tutorial:static/JS/rateYo/jquery.rateyo.min.css') }"/>
+
+        <script src="${request.static_url('tutorial:static/JS/modernizr.js') }" type="text/javascript"></script>
+        <link rel="stylesheet" href="${request.static_url('tutorial:static/CSS/normalize.css') }">
+        <link rel='stylesheet prefetch' href="${request.static_url('tutorial:static/CSS/font-awesome.min.css') }">
+        <link rel="stylesheet" href="${request.static_url('tutorial:static/CSS/style.css') }">
+        <script src="${request.static_url('tutorial:static/JS/jquery.auto-complete.min.js') }" type="text/javascript"></script>
+        <link rel="stylesheet" href="${request.static_url('tutorial:static/CSS/jquery.auto-complete.css') }">
+
+        <script>
+            var ratedMap = new Object(); // or var map = {};
+            ratedMap["G"] = "G (General Audiences) – All Ages Admitted";
+            ratedMap["PG"] = "PG (Parental Guidance Suggested) – Some Material May Not Be Suitable For Children.";
+            ratedMap["PG-13"] = "PG-13 (Parents Strongly Cautioned) – Some Material May Be Inappropriate For Children Under 13.";
+            ratedMap["R"] = "R (Restricted) – Under 17 Requires Accompanying Parent Or Adult Guardian.";
+            ratedMap["NC-17"] = "NC-17 (Adults Only) – No One 17 and Under Admitted.";
+
+            $( document ).ready(function() {
+
+                var title = '${movieName}';//$("#movieTitleInp").val();
+                var movieDataForRequest = cleanStringForQuery(title);
+                if(movieDataForRequest != null){
+                    callMovieDetail(movieDataForRequest);
+                }
+
+            });
+
+            function cleanStringForQuery(str){
+                var myRegexp = /([A-Za-z0-9\:\,\.\'\-\&\!\/\?\*\$ ]+)(?: \([ a-zA-Z0-9\.\'\:\-\,\?\&]+\))*(?: ?\(([0-9]{4})\))/g;
+                var match = myRegexp.exec(str);
+                var movieTitle = $.trim(match[1]);
+                var moviesYear = $.trim(match[2]);
+                var index = 0;
+                if((index = movieTitle.lastIndexOf(", ")) != -1){
+                    movieTitle = movieTitle.substring(0, index);
+                }
+                console.log(movieTitle+","+moviesYear);
+                return [movieTitle, moviesYear];
+            }
+
+            function callMovieDetail(movieData){
+                $.ajax({
+                   type: "GET",
+                   url: "http://www.omdbapi.com/?t="+encodeURI(movieData[0])+"&y="+movieData[1]+"&plot=short&r=json",
+                   dataType: "json",
+                   success: function(resp){
+                     // we have tde response
+                     //alert("Server said:\n '" + resp.Poster + "'");
+                     setEditFormBean(resp)
+                   },
+                   error: function(e){
+                     alert('Error: ' + e);
+                   }
+                 });
+            }
+
+            function setEditFormBean(data){
+                $('img[id="poster"]').attr({src: data.Poster})
+                $("#rateYo").rateYo({
+                    rating    : parseFloat(data.imdbRating)/2.0,
+                    spacing   : "5px",
+                    numStars  : 10,
+                    multiColor: {
+
+                      "startColor": "#FF0000", //RED
+                      "endColor"  : "#00FF00"  //GREEN
+                    }
+                });
+                $("#rateNum").html(data.imdbRating+"/10");
+                $("#movieTitle").html(data.Title);
+
+                var ratedStr = ratedMap[data.Rated] != undefined ? ratedMap[data.Rated] : data.Rated;
+                //$("#ratedDiv").html(ratedStr);
+                $("#releasedDiv").html(data.Released);
+                $("#runtimeDiv").html(data.Runtime);
+                $("#genreDiv").html(data.Genre);
+                $("#directorDiv").html(data.Director);
+            }
+
+            function testCall(){
+                var title = $("#movieTitleInp").val();
+                movieDataForRequest = cleanStringForQuery(title);
+                callMovieDetail(movieDataForRequest);
+
+            }
+        </script>
     </head>
     <body>
-        <h1>Hackathon 2016</h1>
-        <p>Prediction rate <code>${rating}</code></p>
+        <div align="center">
+            <h1>Hackathon 2016</h1>
+            <!--Movie Title : <input type="text" id="movieTitleInp" size="30">-->
+            <!--<input type="button" id="searchBtn" value="Search" onclick="testCall()">-->
+            <!--<input type="button" id="clearBtn" value="Clear" onclick="clear()">-->
+            <div class="plan-container">
+                  <div class="plan-header">
+                     <div id="movieTitle" align="center" class="movie-title">
+                  </div>
+                  <div class="plan-details">
+                    <ul>
+                      <li><img id="poster" src="${request.static_url('tutorial:static/IMG/No_image_available.svg') }"/></li>
+                      <li>Go To imdb.com <span id="imdbLink"></span></li>
+                      <li><span id="rateYo" style="pointer-events: none;"></span></li>
+                      <li>IMDB Rating <span id="rateNum"></span></li>
+                      <!--<li>Rated IMDB<span id="ratedDiv"></span></li>-->
+                        <li>Predic Rating <span id="predicrate" >${pred}/5</span></li>
+                      <li>Released <span id="releasedDiv"></span></li>
+                      <li>Runtime <span id="runtimeDiv"></span></li>
+                      <li>Genre <span id="genreDiv"></span></li>
+                      <li>Director <span id="directorDiv"></span></li>
+                    </ul>
+                  </div>
+            </div>
         <p>Go to the <a href="${request.route_url('hello')}">Back</a>.</p>
     </body>
 </html>

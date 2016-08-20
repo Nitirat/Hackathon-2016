@@ -1,0 +1,17 @@
+@charset "utf-8";
+
+.require-field {
+    border:1px solid red;
+}
+
+ .ui-tooltip{
+    background: #EFF5FB;
+    border: 2px solid white;
+    padding: 5px 5px;
+    color: black;
+    border-radius: 10px;
+    font: 18px;
+	display: table;
+    /*text-transform: uppercase;*/
+    box-shadow: 0 0 7px black;
+  }
